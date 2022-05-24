@@ -13,8 +13,16 @@ const sendHttpRequest = (method, url, data) => {
     }
 
     xhr.onload = () => {
-      resolve(xhr.response);
+      if (xhr.status >= 400) {
+        reject(xhr.response);
+      } else {
+        resolve(xhr.response);
+      }
     };
+
+    // xhr.onerror = () => {
+    //   reject("Something went wrong!");
+    // };
 
     xhr.send(JSON.stringify(data));
   });
@@ -31,9 +39,13 @@ const sendData = () => {
   sendHttpRequest("POST", "https://reqres.in/api/register", {
     email: "eve.holt@reqres.in",
     password: "pistol",
-  }).then(responseData => {
-    console.log(responseData);
-  });
+  })
+    .then(responseData => {
+      console.log(responseData);
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 getBtn.addEventListener("click", getData);
